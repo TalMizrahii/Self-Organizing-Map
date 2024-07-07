@@ -27,15 +27,19 @@ class SOM:
         bmu = np.argmin(np.sum((self.weights - vector) ** 2, axis=2))
         return np.unravel_index(bmu, (self.x, self.y))
 
-    def decay_learning_rate(self, iteration, num_iterations):
+    def decay_learning_rate(self, iteration):
         self.learning_rate = self.initial_learning_rate * np.exp(-0.01 * iteration)
 
+    def decay_update_percentage(self, iteration):
+        self.update_percentage = self.update_percentage * np.exp(-0.01 * iteration)
     def train(self, data_train, num_iterations):
         self.weights = self.initialize_weights(data_train)
         for iteration in range(num_iterations):
-            self.decay_learning_rate(iteration, num_iterations)
+            self.decay_learning_rate(iteration)
+            self.decay_update_percentage(iteration)
             print("iteration: ", iteration + 1)
             print("learning rate: ", self.learning_rate)
+            print("update percentage: ", self.update_percentage)
             present_full_som(self, title=f"SOM Iteration {iteration + 1}")
             for vector in data_train:
                 bmu_index = self.find_bmu(vector)
@@ -91,11 +95,11 @@ def present_full_som(som_map, title="SOM"):
 
 if __name__ == '__main__':
     # Initialize SOM
-    som = SOM(x=10, y=10, input_len=784, initial_learning_rate=0.5, update_percentage=10, initial_radius=3)
+    som = SOM(x=10, y=10, input_len=784, initial_learning_rate=0.3, update_percentage=15, initial_radius=3)
 
     # Load data
     data = pd.read_csv('digits_test.csv', header=None).values
-    som.train(data_train=data, num_iterations=30)
+    som.train(data_train=data, num_iterations=10)
 
     # Present the final SOM
     present_full_som(som_map=som, title="Final SOM")
