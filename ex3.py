@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+
 class SOM:
     def __init__(self, x, y, input_len, initial_learning_rate=0.5, update_percentage=30, initial_radius=3):
         self.x = x
@@ -14,36 +15,50 @@ class SOM:
         self.radius = initial_radius
         self.weights = None
 
-    def initialize_weights(self, data):
-        mean_vector = np.mean(data, axis=0)
-        max_val = np.max(mean_vector)
-        min_val = np.min(mean_vector)
-        diff = max_val - min_val
-        weights = np.random.randint(int(min_val - 0.1 * diff), int(max_val + 0.1 * diff),
-                                    size=(self.x, self.y, self.input_len))
+    def initialize_weights(self, data_set):
+        median_vector = np.median(data_set, axis=0)
+        weights = np.zeros((self.x, self.y, self.input_len))
+
+        for i in range(self.x):
+            for j in range(self.y):
+                weights[i, j] = median_vector + np.random.randint(-10, 11, self.input_len)
+
+        weights = np.clip(weights, 0, 255).astype(np.int32)
         return weights
 
     def find_bmu(self, vector):
         bmu = np.argmin(np.sum((self.weights - vector) ** 2, axis=2))
         return np.unravel_index(bmu, (self.x, self.y))
 
-    def decay_learning_rate(self, iteration):
-        self.learning_rate = self.initial_learning_rate * np.exp(-0.01 * iteration)
+    def decay_learning_rate(self, iteration, num_iterations):
+        self.learning_rate = self.initial_learning_rate * np.exp(-0.06 * iteration)
 
-    def decay_update_percentage(self, iteration):
+    def decay_update_percentage(self, iteration, num_iterations):
         self.update_percentage = self.update_percentage * np.exp(-0.01 * iteration)
-    def train(self, data_train, num_iterations):
+
+    def decay_radius(self, iteration, num_iterations):
+        self.radius = self.initial_radius * np.exp(-0.1 * iteration)
+
+    def train(self, data_train, num_iterations, batch_size=0.1):
         self.weights = self.initialize_weights(data_train)
+        num_batches = round(len(data_train) * batch_size)
+
         for iteration in range(num_iterations):
-            self.decay_learning_rate(iteration)
-            self.decay_update_percentage(iteration)
+            self.decay_learning_rate(iteration, num_iterations)
+            self.decay_update_percentage(iteration, num_iterations)
+            # self.decay_radius(iteration, num_iterations)
             print("iteration: ", iteration + 1)
             print("learning rate: ", self.learning_rate)
             print("update percentage: ", self.update_percentage)
+            # print("radius: ", self.radius)
             present_full_som(self, title=f"SOM Iteration {iteration + 1}")
-            for vector in data_train:
-                bmu_index = self.find_bmu(vector)
-                self.update_weights_manhattan(vector, bmu_index)
+
+            # Process data in batches
+            for batch_idx in range(num_batches):
+                batch_data = data_train[batch_idx * batch_size: (batch_idx + 1) * batch_size]
+                for vector in batch_data:
+                    bmu_index = self.find_bmu(vector)
+                    self.update_weights_manhattan(vector, bmu_index)
 
     def update_weights_manhattan(self, train_vec, bmu_idx):
         bmu_x, bmu_y = bmu_idx
@@ -99,18 +114,7 @@ if __name__ == '__main__':
 
     # Load data
     data = pd.read_csv('digits_test.csv', header=None).values
-    som.train(data_train=data, num_iterations=10)
+    som.train(data_train=data, num_iterations=20, batch_size=100)
 
     # Present the final SOM
     present_full_som(som_map=som, title="Final SOM")
-
-
-    # Present an example picture
-    # present_full_som(som_map=som, title="Final SOM")
-
-# present_picture(data[1], title="Example Image")
-# def present_picture(vector, title="Image"):
-#     image = vector.reshape(28, 28)
-#     plt.imshow(image, cmap='gray', vmin=0, vmax=255)
-#     plt.title(title)
-#     plt.show()
