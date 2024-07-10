@@ -114,7 +114,7 @@ if __name__ == '__main__':
 
     # Load data
     data = pd.read_csv('digits_test.csv', header=None).values
-    som.train(data_train=data, num_iterations=20, batch_size=100)
+    som.train(data_train=data, num_iterations=20, batch_size=10)
 
     # Present the final SOM
     present_full_som(som_map=som, title="Final SOM")

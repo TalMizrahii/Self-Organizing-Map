@@ -11,6 +11,7 @@ class SOM:
         self.input_len = input_len
         self.initial_learning_rate = initial_learning_rate
         self.learning_rate = initial_learning_rate
+        self.initial_radius = radius
         self.radius = radius
         self.batch_percentage = batch_percentage
         self.weights = None
@@ -21,7 +22,7 @@ class SOM:
 
         for i in range(self.x):
             for j in range(self.y):
-                weights[i, j] = median_vector + np.random.randint(-10, 11, self.input_len) + np.random.normal(0, 5,
+                weights[i, j] = median_vector + np.random.randint(-80, 81, self.input_len) + np.random.normal(0, 5,
                                                                                                               self.input_len)
 
         weights = np.clip(weights, 0, 255).astype(np.float32)
@@ -32,12 +33,10 @@ class SOM:
         return np.unravel_index(bmu, (self.x, self.y))
 
     def decay_learning_rate(self, iteration, num_iterations):
-        self.learning_rate = self.initial_learning_rate * np.exp(-0.003 * iteration)
+        self.learning_rate = self.initial_learning_rate * np.exp(-0.0009 * iteration)
 
     def decay_radius(self, iteration, num_iterations):
-        if self.radius < 0.12:
-            return
-        self.radius = self.radius * np.exp(-0.0005 * iteration)
+        self.radius = self.initial_radius * np.exp(-0.0025 * iteration)
 
     def update_weights(self, train_vec, bmu_idx):
         bmu_x, bmu_y = bmu_idx
@@ -65,7 +64,7 @@ class SOM:
                 bmu_index = self.find_bmu(vector)
                 self.update_weights(vector, bmu_index)
 
-            if (iteration + 1) % 5 == 0:
+            if (iteration + 1) % 10 == 0:
                 print(f"\nIteration {iteration + 1}/{num_iterations}")
                 print(f"Learning rate: {self.learning_rate:.4f}")
                 print(f"radius: {self.radius:.4f}")
@@ -92,11 +91,11 @@ def present_full_som(som_map, title="SOM"):
 
 if __name__ == '__main__':
     # Initialize SOM
-    som = SOM(x=10, y=10, input_len=784, initial_learning_rate=0.18, radius=0.18, batch_percentage=0.20)
+    som = SOM(x=10, y=10, input_len=784, initial_learning_rate=0.2, radius=0.21, batch_percentage=0.0012)
 
     # Load data
     data = pd.read_csv('digits_test.csv', header=None).values.astype(np.float32)
-    som.train(data_train=data, num_iterations=200)
+    som.train(data_train=data, num_iterations=500)
 
     # Present the final SOM
     present_full_som(som_map=som, title="Final SOM")
