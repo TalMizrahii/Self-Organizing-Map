@@ -2,8 +2,10 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from tqdm import tqdm
-from collections import Counter
-import matplotlib.colors as colors
+
+
+# from collections import Counter
+# import matplotlib.colors as colors
 
 
 class SOM:
@@ -66,11 +68,8 @@ class SOM:
                 bmu_index = self.find_bmu(vector)
                 self.update_weights(vector, bmu_index)
 
-            if (iteration + 1) % 10 == 0:
-                print(f"\nIteration {iteration + 1}/{num_iterations}")
-                print(f"Learning rate: {self.learning_rate:.4f}")
-                print(f"radius: {self.radius:.4f}")
-                # present_full_som(self, title=f"SOM Iteration {iteration + 1}")
+            if (iteration + 1) % (num_iterations // 10) == 0:
+                present_full_som(self, title=f"SOM Iteration {iteration + 1}")
 
         # Convert weights to int32 at the end of training
         self.weights = self.weights.astype(np.int32)
@@ -87,18 +86,18 @@ class SOM:
 
         return label_map
 
-    def get_most_frequent_labels(self, label_map):
-        most_frequent_labels = np.zeros((self.x, self.y), dtype=int)
-        accuracy_map = np.zeros((self.x, self.y), dtype=float)
-
-        for i in range(self.x):
-            for j in range(self.y):
-                if label_map[i, j]:
-                    counter = Counter(label_map[i, j])
-                    most_frequent_labels[i, j] = counter.most_common(1)[0][0]
-                    accuracy_map[i, j] = counter.most_common(1)[0][1] / len(label_map[i, j])
-
-        return most_frequent_labels, accuracy_map
+    # def get_most_frequent_labels(self, label_map):
+    #     most_frequent_labels = np.zeros((self.x, self.y), dtype=int)
+    #     accuracy_map = np.zeros((self.x, self.y), dtype=float)
+    #
+    #     for i in range(self.x):
+    #         for j in range(self.y):
+    #             if label_map[i, j]:
+    #                 counter = Counter(label_map[i, j])
+    #                 most_frequent_labels[i, j] = counter.most_common(1)[0][0]
+    #                 accuracy_map[i, j] = counter.most_common(1)[0][1] / len(label_map[i, j])
+    #
+    #     return most_frequent_labels, accuracy_map
 
 
 def present_full_som(som_map, title="SOM"):
@@ -116,54 +115,53 @@ def present_full_som(som_map, title="SOM"):
     plt.show()
 
 
-def present_som_with_labels(som_map, most_frequent_labels, accuracy_map, title="SOM with Labels"):
-    fig, axes = plt.subplots(som_map.x, som_map.y, figsize=(10, 10))
-    fig.suptitle(title, fontsize=20)
+# def present_som_with_labels(som_map, most_frequent_labels, accuracy_map, title="SOM with Labels"):
+#     fig, axes = plt.subplots(som_map.x, som_map.y, figsize=(10, 10))
+#     fig.suptitle(title, fontsize=20)
+#
+#     for i in range(som_map.x):
+#         for j in range(som_map.y):
+#             ax = axes[i, j]
+#             image = som_map.weights[i, j].reshape(28, 28)
+#             ax.imshow(image, cmap='gray', vmin=0, vmax=255)
+#             label = most_frequent_labels[i, j]
+#             accuracy = accuracy_map[i, j]
+#             ax.set_title(f"{label} ({int(accuracy * 100)}%)", fontsize=8)
+#             if accuracy > 0.8:
+#                 # Add a green border around cells with >80% accuracy
+#                 ax.patch.set_edgecolor('lime')
+#                 ax.patch.set_linewidth(3)
+#             ax.axis('off')
+#
+#     plt.subplots_adjust(wspace=0.5, hspace=0.5)
+#     plt.show()
 
-    for i in range(som_map.x):
-        for j in range(som_map.y):
-            ax = axes[i, j]
-            image = som_map.weights[i, j].reshape(28, 28)
-            ax.imshow(image, cmap='gray', vmin=0, vmax=255)
-            label = most_frequent_labels[i, j]
-            accuracy = accuracy_map[i, j]
-            ax.set_title(f"{label} ({int(accuracy * 100)}%)", fontsize=8)
-            if accuracy > 0.8:
-                # Add a green border around cells with >80% accuracy
-                ax.patch.set_edgecolor('lime')
-                ax.patch.set_linewidth(3)
-            ax.axis('off')
-
-    plt.subplots_adjust(wspace=0.5, hspace=0.5)
-    plt.show()
-
-
-def present_accuracy_heatmap(accuracy_map, title="Accuracy Heatmap"):
-    plt.figure(figsize=(10, 8))
-
-    # Create a custom colormap
-    cmap = colors.LinearSegmentedColormap.from_list("custom",
-                                                    ["#E6F3FF", "#FFFFFF", "#FFCCCB", "#FF0000"])
-
-    # Plot the heatmap with the custom colormap
-    im = plt.imshow(accuracy_map, cmap=cmap, interpolation='nearest', vmin=0, vmax=1)
-
-    # Add a color bar
-    cbar = plt.colorbar(im, label='Accuracy')
-    cbar.set_ticks([0, 0.25, 0.5, 0.75, 1])
-    cbar.set_ticklabels(['0%', '25%', '50%', '75%', '100%'])
-
-    plt.title(title)
+    # def present_accuracy_heatmap(accuracy_map, title="Accuracy Heatmap"):
+    #     plt.figure(figsize=(10, 8))
+    #
+    #     # Create a custom colormap
+    #     cmap = colors.LinearSegmentedColormap.from_list("custom",
+    #                                                     ["#E6F3FF", "#FFFFFF", "#FFCCCB", "#FF0000"])
+    #
+    #     # Plot the heatmap with the custom colormap
+    #     im = plt.imshow(accuracy_map, cmap=cmap, interpolation='nearest', vmin=0, vmax=1)
+    #
+    #     # Add a color bar
+    #     cbar = plt.colorbar(im, label='Accuracy')
+    #     cbar.set_ticks([0, 0.25, 0.5, 0.75, 1])
+    #     cbar.set_ticklabels(['0%', '25%', '50%', '75%', '100%'])
+    #
+    #     plt.title(title)
 
     # Add text annotations
-    for i in range(accuracy_map.shape[0]):
-        for j in range(accuracy_map.shape[1]):
-            color = 'black' if accuracy_map[i, j] < 0.7 else 'white'
-            plt.text(j, i, f'{accuracy_map[i, j]:.2f}',
-                     ha='center', va='center', color=color)
-
-    plt.tight_layout()
-    plt.show()
+    # for i in range(accuracy_map.shape[0]):
+    #     for j in range(accuracy_map.shape[1]):
+    #         color = 'black' if accuracy_map[i, j] < 0.7 else 'white'
+    #         plt.text(j, i, f'{accuracy_map[i, j]:.2f}',
+    #                  ha='center', va='center', color=color)
+    #
+    # plt.tight_layout()
+    # plt.show()
 
 
 if __name__ == '__main__':
@@ -172,16 +170,16 @@ if __name__ == '__main__':
 
     # Load data
     data = pd.read_csv('digits_test.csv', header=None).values.astype(np.float32)
-    true_labels = pd.read_csv('digits_keys.csv', header=None).values.flatten().astype(int)
+    # true_labels = pd.read_csv('digits_keys.csv', header=None).values.flatten().astype(int)
 
     # Train SOM
     som.train(data_train=data, num_iterations=10000)
-
+    present_full_som(som, title="Final SOM")
     # Get label map and accuracy
-    label_map = som.get_label_map(data, true_labels)
-    most_frequent_labels, accuracy_map = som.get_most_frequent_labels(label_map)
+    # label_map = som.get_label_map(data, true_labels)
+    # most_frequent_labels, accuracy_map = som.get_most_frequent_labels(label_map)
 
     # Present the final SOM with labels and accuracy
-    present_som_with_labels(som_map=som, most_frequent_labels=most_frequent_labels, accuracy_map=accuracy_map,
-                            title="Final SOM with Labels")
-    present_accuracy_heatmap(accuracy_map, title="SOM Accuracy Heatmap")
+    # present_som_with_labels(som_map=som, most_frequent_labels=most_frequent_labels, accuracy_map=accuracy_map,
+    #                         title="Final SOM with Labels")
+    # present_accuracy_heatmap(accuracy_map, title="SOM Accuracy Heatmap")
