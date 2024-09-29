@@ -14,8 +14,8 @@
   <a href="#description">Description</a> •
   <a href="#initialization">Initialization</a> •
   <a href="#hyperparameters">Hyperparameters</a> •
-  <a href="#difference-between-runs">Difference Between Runs</a> •
-  <a href="#dependencies">Dependencies</a> •
+  <a href="#grid-size-selection">Grid Size Selection</a> •
+  <a href="#results">Results</a> •
     <a href="#installing-and-executing">Installing And Executing</a> •
   <a href="#author">Author</a> 
 </p>
@@ -98,12 +98,34 @@ We initiate the values of the SOM as follows:
 * Batch Percentage: 0.0012 
 * Iterations: ~10,000
 
+We reached those parameters after many test runs, concluding this parameters are good fit for us.
 
-## Dependencies
+### Decay Functions
 
-* Python 3.7+
-* NumPy
-* Matplotlib
+Decay functions adjust the learning rate 𝜂(𝑡) and the neighborhood radius 𝜎(𝑡) over iterations to ensure the SOM converges smoothly.
+
+**Learning Rate Decay**: 𝜂(𝑡)=  𝜂_0⋅𝑒^(−𝛼𝑡)
+
+Where 𝜂_0  is the initial learning rate (0.20), 𝛼 is the decay rate parameter, initiated to 0.0009 and 𝑡 is the current iteration.
+
+**Neighborhood Radius Decay**: 𝜎(𝑡)  =  𝜂_0 ⋅𝑒^(−𝛽𝑡)
+
+Where 𝜎(𝑡)​ is the initial radius (0.21), 𝛽 is the decay rate parameter, initiated to 0.0025 and 𝑡 is the current iteration.
+
+These formulas govern how the learning rate and radius decrease over time, allowing the SOM to converge effectively.
+
+![image](https://github.com/user-attachments/assets/1719dc85-af08-455f-bc49-dcfa867d40cd)
+
+## Grid Size Selection: 
+
+The digits dataset typically consists of 28x28 pixel images, resulting in 784-dimensional input vectors (since each pixel is a feature). A 10x10 SOM means there are 100 neurons in total, each with a weight vector of dimension 784. This setup allows each neuron to potentially capture a distinct pattern or cluster within the digit dataset.
+
+Therefore, the grid size should be large enough to capture the variability and complexity present in the dataset. For digits 0 to 9, which have distinct visual patterns but variations in writing style, a 10x10 grid can provide sufficient resolution to differentiate between different digits.
+
+A 10x10 grid strikes a balance between computational feasibility and adequate representation of the dataset. To conclude, 10x10 grid size is generally a good fit because it allows for effective clustering and visualization of digit patterns. Each neuron in the SOM can represent a distinct digit or a group of similar digits.
+
+## Results
+
 
 ## Installing And Executing
   
