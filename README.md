@@ -126,6 +126,35 @@ A 10x10 grid strikes a balance between computational feasibility and adequate re
 
 ## Results
 
+For the output of the model, we used Both suggested representation, in addition to a heatmap. On the left grids, we can see the SOM’s grid.
+
+The grid contains the vector resulted, represented as a photo. Above each photo, we added what is the true label of the photo (how close it to the closest vector from digits_keys.csv file), and the percentage of entries that were mapped to this neuron.
+
+The heatmap represent the color-coded from white (0% accuracy) to red (100% accuracy). Each cell contains the classification accuracy for data points mapped to that neuron.
+This heatmap reveals how well each neuron performs in correctly identifying digits. This combined visualization allows for a comprehensive understanding of the SOM's performance, showing both the learned representations and the accuracy of classification across the map. 
+
+
+<img src="https://github.com/user-attachments/assets/3c2f5a00-9899-4c38-a155-7a132671b7b5" alt="init" width="500"/>
+
+In this 300 iterations run, we can see a very dense high accuracy on the corners of the heatmap, which perfectly coordinates with the clear, not blurred neurons of 6, 1 and 2. 
+
+<img src="https://github.com/user-attachments/assets/62b13838-f324-4912-9fac-f6798e38e195" alt="init" width="500"/>
+<img src="https://github.com/user-attachments/assets/8eaff925-5b55-48c3-98cb-944c178826c9" alt="init" width="500"/>
+
+As we can see, when we increase the number of iterations, more and more accurate cells are presented in the heatmap. Compared to the 300 and 600 iteration’s runs, the 1200 is starting to fill almost all grid with accurate cells. 
+On the other hand, in the 1,200 iteration’s run there ‘not accurate’ cells are much blurred and unclear. This is due to the transaction between cells. As the SOM learns, it creates smoother transitions between neighboring neurons, which can lead to less distinct representations in boundary areas or regions of uncertainty.
+
+<img src="https://github.com/user-attachments/assets/1d403bfe-d72b-4b2c-a159-798ea16798e9" alt="init" width="500"/>
+
+In this example, we ran the program for 10,000 iterations. We can clearly see this is the best run so far, not surprising due to our explanation about the connection between number of iterations to the SOM’s clarity. Of course, a perfect SOM is one with full red heatmap, but it would probably take forever on our PC’s. We can still see very white cells, like cell [2,9]. This is (as explained above) a result of two neighbors pulling each side of this cell to change it, but the overall result is excellent! This is also why we chose this solution as our final result.
+
+### Comparing to non-batching method
+
+<img src="https://github.com/user-attachments/assets/68fb275c-4090-4d4b-8996-dd581695cf08" alt="init" width="500"/>
+
+To compare batch and non-batched methods, we can see the difference between the two pairs of images from the previous section to this section. Both runs has approximately the same amount of calls to the update function (~100k).
+The accuracy heatmap shows a wider range of accuracy values with several cells having lower accuracy (e.g., 0.23, 0.26, 0.27).
+There are noticeable cells with accuracy below 50%, indicating areas where the model was less efficient then the batch model.
 
 ## Installing And Executing
   
