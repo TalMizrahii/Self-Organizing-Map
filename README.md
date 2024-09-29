@@ -7,7 +7,7 @@
   <br>
 </h1>
 
-<h4 align="center"> A project for Computational Biology course, Bar-Ilan University.
+<h4 align="center"> A neural network project for Computational Biology course, Bar-Ilan University.
 
 
 <p align="center">
@@ -16,7 +16,7 @@
   <a href="#hyperparameters">Hyperparameters</a> •
   <a href="#grid-size-selection">Grid Size Selection</a> •
   <a href="#results">Results</a> •
-    <a href="#installing-and-executing">Installing And Executing</a> •
+  <a href="#installing-and-executing">Installing And Executing</a> •
   <a href="#author">Author</a> 
 </p>
 
