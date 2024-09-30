@@ -162,13 +162,13 @@ You can use [Git](https://git-scm.com). From your command line:
 
 ```bash
 # Clone this repository.
-$ git clone https://github.com/TalMizrahii/Cellular-Automata
+$ git clone https://github.com/TalMizrahii/Self-Organizing-Map
 
 # Go into the repository.
-$ cd Cellular-Automata
+$ cd Self-Organizing-Map
 
 # Run the program
-$ cellularAutomata.exe
+$ SelfOrganizingMap.exe
 
 ```
 ## Author
