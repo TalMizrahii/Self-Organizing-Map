@@ -167,7 +167,7 @@ $ git clone https://github.com/TalMizrahii/Self-Organizing-Map
 # Go into the repository.
 $ cd Self-Organizing-Map
 
-# Run the program
+# Run the program from the release section
 $ SelfOrganizingMap.exe
 
 ```
